@@ -1,113 +1,102 @@
-import Image from 'next/image'
+"use client";
+
+import Block from "@/Componenets/Block";
+import { useState } from "react";
 
 export default function Home() {
+  const [state, setState] = useState(Array(9).fill(null));
+  const [currentTurn, setCurrentTurn] = useState("X");
+  const [x, setX] = useState(0);
+  const [o, setO] = useState(0);
+  // let X: number = 0;
+  // let O: number = 0;
+
+  // check winner
+  const checkWinner = (state: any[]) => {
+    const win = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+
+    for (let i = 0; i < win.length; i++) {
+      const [a, b, c] = win[i];
+      if (state[a] !== null && state[a] === state[b] && state[a] === state[c])
+        return true;
+    }
+  };
+
+  const handleClick = (index: number) => {
+    const tempState = Array.from(state);
+    // console.log(tempState);
+    if (tempState[index] !== null) return;
+
+    tempState[index] = currentTurn;
+    // console.log(tempState[index]);
+
+    setCurrentTurn(currentTurn === "X" ? "O" : "X");
+    // check win
+    const winner = checkWinner(tempState);
+    if (winner) {
+      currentTurn === "X" ? `${setX(x + 1)}` : `${setO(o + 1)}`;
+
+      setTimeout(() => {
+        alert(`${currentTurn}, won`);
+        return setState(Array(9).fill(null));
+      }, 100);
+    }
+    setState(tempState);
+  };
+  // console.log(O, "o win");
+
+  const handleReset = () => {
+    setState(Array(9).fill(null));
+  };
+
+  // console.log(state);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <main className=" text-center mt-4 w-full h-full">
+      <h1 className=" font-bold text-lg text-red-600">Tic Tac Toe</h1>
+      {/* total wins */}
+      <div>
+        <p>X has won: {x} time</p>
+        <p>O has won: {o} time</p>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      {/* board */}
+      {/* row 1 */}
+      <div className=" flex my-auto mx-1 justify-center">
+        {/* <div className=" h-20 w-20 border border-red-600 text-red-700 flex justify-center items-center cursor-pointer text-[30px]"></div> */}
+        <Block onClick={() => handleClick(0)} value={state[0]} />
+        <Block onClick={() => handleClick(1)} value={state[1]} />
+        <Block onClick={() => handleClick(2)} value={state[2]} />
       </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+      {/* row 2 */}
+      <div className=" flex my-auto mx-1 justify-center">
+        <Block onClick={() => handleClick(3)} value={state[3]} />
+        <Block onClick={() => handleClick(4)} value={state[4]} />
+        <Block onClick={() => handleClick(5)} value={state[5]} />
+      </div>
+      {/* row 3 */}
+      <div className=" flex my-auto mx-1 justify-center">
+        <Block onClick={() => handleClick(6)} value={state[6]} />
+        <Block onClick={() => handleClick(7)} value={state[7]} />
+        <Block onClick={() => handleClick(8)} value={state[8]} />
+      </div>
+      <div>
+        <button
+          type="button"
+          className=" mt-4 bg-gray-700 border-0 rounded text-white py-1 px-4"
+          onClick={handleReset}
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+          Reset
+        </button>
       </div>
     </main>
-  )
+  );
 }
